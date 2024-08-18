@@ -1,0 +1,76 @@
+# Example configuration file for BTRFS-SnapRAID
+# For detailed explanations for each option, see docs/CONFIG.md
+
+[mounts]
+# Absolute path of the parent directory for btrfs drive mounts
+btrfs_mount_dir = /btrfs
+
+# Names of btrfs drives mounted at that location
+# may have multiple drive names, separated by commas
+drives = data1, data2
+
+# Absolute path of the parent directory for SnapRAID subvolume mounts
+# OPTIONAL -- comment out, if not using a separate mount point
+;snapraid_mount_dir = /snapraid
+
+
+[subvolumes]
+# Name of the main data subvolume on each drive.
+live_data = live
+
+# Name of the main SnapRAID subvolume/snapshot on each drive.
+snapraid_data = snapraid
+
+# Subdirectory for snapraid subvolume/snapshots
+# OPTIONAL -- comment out to use the btrfs root directory
+;snapraid_subdir = snaps
+
+# Number of previous SnapRAID snapshots to keep
+# OPTIONAL -- comment out to use defaults (1)
+;snapraid_snaps_to_keep = 1
+
+
+[snapraid]
+# Absolute path to the SnapRAID executable
+cmd = /usr/bin/snapraid
+
+# Absolute path to the SnapRAID configuration file
+config = /etc/snapraid.conf
+
+
+[snapraid_maintenance]
+# The threshold number of DELETED files above which a sync will not take place
+# OPTIONAL -- comment out to disable threshold
+;delete_threshold = 50
+
+# The threshold number of UPDATED files above which a sync will not take place
+# OPTIONAL -- comment out to disable threshold
+;update_threshold = 100
+
+# Should SnapRAID run `touch` on files prior to `sync`?
+# OPTIONAL -- comment out to use defaults ("yes")
+;touch = yes
+
+# SnapRAID --plan option for performing scrubs
+# OPTIONAL -- comment out to disable scrub
+;scrub_plan = 8
+
+# SnapRAID --older-than (days) option for performing scrubs
+# Only applies if scrub_plan is a (percent) number
+# OPTIONAL -- comment out to use defaults (10 days) when applicable
+;scrub_age = 10
+
+
+[logging]
+# Verbosity of messages to print to the console
+# One of: DEBUG / OUTPUT / INFO / WARNING / ERROR
+# OPTIONAL -- comment out to use defaults (WARNING)
+console_level = OUTPUT
+
+# Absolute path to a log file
+# OPTIONAL -- comment out to disable file logging (console logging will remain)
+;file = /var/log/btrfs_snapraid.log
+
+# Verbosity of messages to write to the log file (if enabled)
+# OPTIONAL -- comment out to use defaults (WARNING)
+;file_level = OUTPUT
