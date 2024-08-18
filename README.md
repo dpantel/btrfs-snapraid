@@ -18,9 +18,9 @@ By leveraging the copy-on-write (COW) abilities of BTRFS to make "cheap copies" 
 
 The key to shrinking the "sync hole" is preventing any file changes in the SnapRAID array until a sync is going to be performed.
 
-This is accomplished by taking a snapshot of the "live" file system prior to each sync and letting SnapRAID create its content lists and parity calculations from that snapshot. That snapshot is kept in a frozen state until SnapRAID performs the next sync. If there is a disk failure before the next sync, SnapRAID has all of the information needed to recreate files in its array. Immediately prior to each sync, the SnapRAID snapshot is updated with the changes from the "live" file system, so it can incorporate those changes into its array.
+This is accomplished by taking a snapshot of the "live" file system prior to each sync and letting SnapRAID create its content lists and parity calculations from that snapshot. That snapshot is kept in a frozen state until SnapRAID performs the next sync. If there is a disk failure before the next sync, SnapRAID has all of the information needed to recreate files in its array. Immediately prior to each sync, the SnapRAID snapshot is discarded and recreated from the "live" file system with all of the new changes. During the sync, SnapRAID incorporates those changes into its array.
 
-A read-only snapshot of the data is created at the end of a successful sync. This is done to have a backup data-set, in case a disk fails _during_ a sync operation.
+A read-only snapshot of the SnapRAID data is created at the end of a successful sync. This is done to have a backup data-set, in case a disk fails _during_ a sync operation.
 
 Note that any additions, updates, and deletions that happen in between syncs are still lost, just as they would be in a vanilla SnapRAID setup. However, those updates and deletions will no longer affect the parity calculation of other files, and so the damage is minimized.
 
@@ -41,7 +41,7 @@ The other difference is that this script also incorporates a "maintenance mode",
 Most likely, you will add this to Cron or as a SystemD timer and run it in maintenance mode. But there are some helpful options for test-running in the console.
 
 ```sh
-usage: btrfs_snapraid.py [-h] [-c config.conf] [-n] [-q | -v] [{touch,sync,diff,maintenance}]
+usage: btrfs_snapraid.py [-h] [-c config.conf] [-n] [-q | -v] [touch|sync|diff|maintenance]
 
 Adds BTRFS magic to SnapRAID, manipulating subvolumes and snapshots to plug the "sync hole".
 Can be invoked to run a single SnapRAID command (Touch, Diff, or Sync), or as a scheduled maintenance script, running Touch/Diff/Sync/Scrub in order.
@@ -66,7 +66,7 @@ options:
                         Suppresses all messages except errors.
   -v, --verbose         Override the logging level(s) set in the config.
                         Use "-v" for info, "-vv" for output,
-                        and "-vvv" for debug messages
+                        and "-vvv" for debug messages.
 ```
 
 # SnapRAID Commands
@@ -89,7 +89,7 @@ Only the SnapRAID commands that interact with, or are affected by, the special f
 
 `snapraid sync` will not do anything, because the SnapRAID data is "frozen" and there have been no changes since the last Sync.
 
-`btrfs_snapraid.py sync` will update the SnapRAID subvolumes from the live-data subvolumes before running Sync and then save a "last known good state" snapshot of the SnapRAID subvolume.
+`btrfs_snapraid.py sync` will recreate the SnapRAID subvolumes from the live-data subvolumes before running Sync and then save a "last known good state" snapshot of the SnapRAID subvolume.
 
 ## Maintenance
 

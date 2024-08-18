@@ -31,21 +31,23 @@ This is a sample setup to make it obvious how everything ties together, using th
 _filesystem_
 
 ```sh
-/btrfs/
+/btrfs/						# <-- common parent directory for data disk mount points
     data1/                  # <-- mount point for the btrfs top-level subvolume for disk1
-        snapraid.content    # <-- content file in the top-level subvolume
+        snapraid.content    # <-- content file in the btrfs-root of each disk
         live/               # <-- main data subvolume
         snaps/              # <-- optional snapraid subdirectory
             snapraid/       # <-- main snapraid subvolume
-            snapraid.0/     # <-- read-only snapshot of the snapraid subvolume
+            snapraid.1/     # <-- read-only snapshot of the snapraid subvolume
     data2/
         snapraid.content
         live/
         snaps/
             snapraid/
+            snapraid.1/
 
-/snapraid/
-    data1/  # <-- mount point for the 'snapraid' subvolume on disk1
+
+/snapraid/					# <-- common parent directory for the snapraid mount points
+    data1/  				# <-- mount point for the 'snapraid' subvolume on disk1
     data2/
 ```
 
@@ -66,10 +68,10 @@ _/etc/snapraid.conf_
 
 ```
 content /btrfs/data1/snapraid.content
-content /btrfs/data1/snapraid.content
+content /btrfs/data2/snapraid.content
 ...
 data d1 /snapraid/data1/
-data d2 /snapraid/data1/
+data d2 /snapraid/data2/
 ```
 
 _btrfs_snapraid.conf_

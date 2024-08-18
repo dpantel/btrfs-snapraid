@@ -14,7 +14,7 @@
 
 1. Install dependencies
 1. Copy `btrfs_snapraid.py` to a location of your choice, and make it executable.
-1. Copy `btrfs_snapraid.conf.example` as `btrfs_snapraid.conf` to a location of your choice and edit it to match the setup above.
+1. Copy `btrfs_snapraid.conf.example` as `btrfs_snapraid.conf` to a location of your choice and edit it to match your setup.
    - The script will automatically look for a configuration file in "./btrfs_snapraid.conf", "/usr/local/etc/btrfs_snapraid.conf", and "/etc/btrfs_snapraid.conf" in that order.
 
 ### Users & Permissions

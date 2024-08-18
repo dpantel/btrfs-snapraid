@@ -66,7 +66,7 @@ This section deals with the names of the various subvolumes on each data drive. 
 
 ### live_data
 
-This is the name of the main data subvolume on each data, It is used for all non-SnapRAID read-write activities. (i.e. if you use mergerfs, these are the subvolumes you add to its config.)
+This is the name of the main data subvolume on each data drive, It is used for all non-SnapRAID read-write activities. (i.e. if you use mergerfs, these are the subvolumes you add to its config.)
 
 These subvolumes reside in the btrfs-root of each disk.
 
@@ -96,9 +96,11 @@ snapraid_data = snapraid
 data d1 /btrfs/data1/snapraid
 ```
 
-This snapshot will be re-generated from the live-data subvolume prior to each SnapRAID sync.
+This snapshot will be discarded and re-generated from the live-data subvolume prior to each SnapRAID sync.
 
 In between syncs, this subvolume will remain untouched to maintain a stable 'frozen' state for SnapRAID recovery actions.
+
+**Do not write to this subvolume directly.**
 
 ### (optional) snapraid_subdir
 
